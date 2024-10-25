@@ -3,7 +3,10 @@
 /.env.local
 /.env.local.php
 /.env.*.local
+/.env.backup
+/.env.testing
 /config/secrets/prod/prod.decrypt.private.php
+/config/secrets/prod/*.private.php
 /public/bundles/
 /var/
 /vendor/
@@ -23,3 +26,11 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+# Fichiers de cache, logs et sessions
+/var/cache/
+/var/log/
+/var/sessions/
+
+# Node.js modules
+/node_modules/
