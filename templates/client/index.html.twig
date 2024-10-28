@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Clients{% endblock %}
+
+{% block body %}
+    <div class="p-8">
+        <!-- Header with Filter and Create Button -->
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-3xl font-bold">Clients</h1>
+            
+            <!-- Filter Inputs -->
+            <div class="flex space-x-4">
+                <form action="{{ path('client_index') }}" method="get" class="flex space-x-2">
+                    <input type="text" name="surname" placeholder="Filtrer par surname" value="{{ surnameFilter }}"
+                           class="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" name="telephone" placeholder="Filtrer par téléphone" value="{{ telephoneFilter }}"
+                           class="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                        OK
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Create Button -->
+            <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" 
+                    onclick="window.location.href='{{ path('client_create') }}'">
+                Create
+            </button>
+        </div>
+
+        <!-- Clients Table -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-200">
+                <thead>
+                    <tr class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-left">Nom</th>
+                        <th class="py-3 px-6 text-left">Téléphone</th>
+                        <th class="py-3 px-6 text-left">Adresse</th>
+                        <th class="py-3 px-6 text-left">Dette</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-700 text-sm font-light">
+                    {% for client in clients %}
+                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <td class="py-3 px-6 text-left whitespace-nowrap">{{ client.surname }}</td>
+                        <td class="py-3 px-6 text-left">{{ client.telephone }}</td>
+                        <td class="py-3 px-6 text-left">{{ client.adresse }}</td>
+                        <td class="py-3 px-6 text-left">
+                            <a href="{{ path('client_dettes', { 'clientId': client.id }) }}" class="text-blue-500 hover:underline">
+                                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none">
+                                    Dette
+                                </button>
+                            </a>
+                        </td>
+
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="py-3 px-6 text-left">Aucun client trouvé.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+   
+
+
+
+    </div>
+{% endblock %}
