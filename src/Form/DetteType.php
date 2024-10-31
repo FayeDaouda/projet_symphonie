@@ -1,5 +1,4 @@
 <?php
-
 // src/Form/DetteType.php
 
 namespace App\Form;
@@ -7,7 +6,7 @@ namespace App\Form;
 use App\Entity\Dette;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType; // Assurez-vous d'importer le bon type
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -22,20 +21,22 @@ class DetteType extends AbstractType
                     'class' => 'border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
                 ]
             ])
-            ->add('date', DateTimeType::class, [ // Assurez-vous d'ajouter le champ date
+            ->add('date', DateTimeType::class, [
                 'label' => 'Date',
                 'widget' => 'single_text',
+                'data' => new \DateTime(), // Définit la date actuelle comme valeur par défaut
                 'attr' => [
                     'class' => 'border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
                 ]
             ])
             ->add('montantVerser', NumberType::class, [
                 'label' => 'Montant Versé',
-                'required' => false, // Il est possible que ce champ soit optionnel
+                'required' => false,
                 'attr' => [
                     'class' => 'border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
                 ]
             ]);
+            // Ne pas inclure le champ statut
     }
 
     public function configureOptions(OptionsResolver $resolver)

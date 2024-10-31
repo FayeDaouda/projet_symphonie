@@ -15,6 +15,7 @@
             </a>
         </div>
 
+
         {% if dettes|length > 0 %}
             <table class="min-w-full bg-white border border-gray-200">
                 <thead>
@@ -22,6 +23,8 @@
                         <th class="py-3 px-6 text-left">Montant</th>
                         <th class="py-3 px-6 text-left">Date</th>
                         <th class="py-3 px-6 text-left">Montant Versé</th>
+                        <th class="py-3 px-6 text-left">Montant Restant</th>
+                        <th class="py-3 px-6 text-left">Statut</th> 
                     </tr>
                 </thead>
                 <tbody class="text-gray-700 text-sm font-light">
@@ -30,18 +33,14 @@
                             <td class="py-3 px-6 text-left">{{ dette.montant }}</td>
                             <td class="py-3 px-6 text-left">{{ dette.date|date('d-m-Y') }}</td>
                             <td class="py-3 px-6 text-left">{{ dette.montantVerser }}</td>
+                            <td class="py-3 px-6 text-left">{{ dette.getMontantRestant() }}</td>
+                            <td class="py-3 px-6 text-left">{{ dette.statut }}</td> 
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
-
-            <!-- Pagination -->
-            <div class="mt-4">
-                {{ knp_pagination_render(dettes) }}
-            </div>
         {% else %}
-            <p>Aucune dette enregistrée pour ce client.</p>
+            <p>Aucune dette trouvée pour ce client.</p>
         {% endif %}
     </div>
 {% endblock %}
-

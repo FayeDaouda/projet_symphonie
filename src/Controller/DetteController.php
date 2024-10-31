@@ -18,28 +18,25 @@ class DetteController extends AbstractController
     #[Route('/clients/{clientId}/dettes', name: 'client_dettes')]
     public function index(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator, int $clientId): Response
     {
-        // Récupérer le client par son ID
         $client = $entityManager->getRepository(Client::class)->find($clientId);
         
         if (!$client) {
             throw $this->createNotFoundException('Client non trouvé.');
         }
 
-        // Créer une requête pour récupérer les dettes du client
         $queryBuilder = $entityManager->getRepository(Dette::class)->createQueryBuilder('d')
             ->where('d.client = :client')
             ->setParameter('client', $client);
 
         $query = $queryBuilder->getQuery();
 
-        // Paginer les résultats
         $dettes = $paginator->paginate(
-            $query, // La requête
-            $request->query->getInt('page', 1), // Numéro de la page (par défaut 1)
-            6 // Nombre d'éléments par page
+            $query,
+            $request->query->getInt('page', 1),
+            6
         );
 
-        return $this->render('dette/index.html.twig', [
+        return $this->render('client/dettes.html.twig', [ // Chemin mis à jour
             'client' => $client,
             'dettes' => $dettes,
         ]);
@@ -54,23 +51,40 @@ class DetteController extends AbstractController
         if (!$client) {
             throw $this->createNotFoundException('Client non trouvé.');
         }
-
+    
         $dette = new Dette();
         $form = $this->createForm(DetteType::class, $dette);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $dette->setClient($client); // Associer la dette au client
+    
+            // Calculer montantRestant
+            $montantRestant = $dette->getMontant() - ($dette->getMontantVerser() ?? 0);
+            
+            // Mettre à jour le statut selon montantRestant
+            if (abs($montantRestant) < 0.01) { // Permet une petite marge d'erreur
+                $dette->setStatut('solder');
+            } else {
+                $dette->setStatut('non_solde');
+            }
+    
             $entityManager->persist($dette);
             $entityManager->flush();
-
+    
+            // Ajouter un message flash de succès
+            $this->addFlash('success', 'La dette a été ajoutée avec succès.');
+    
             // Rediriger vers la liste des dettes du client
             return $this->redirectToRoute('client_dettes', ['clientId' => $clientId]);
         }
-
+    
+        // Renvoyer le template avec le formulaire
         return $this->render('dette/add.html.twig', [
             'form' => $form->createView(),
             'client' => $client,
         ]);
     }
+    
+
 }

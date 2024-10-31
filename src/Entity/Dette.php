@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use App\Repository\DetteRepository;
@@ -27,6 +26,9 @@ class Dette
     #[ORM\JoinColumn(nullable: false)]
     private ?Client $client = null;
 
+    #[ORM\Column(type: 'string', length: 20, options: ['default' => 'non_solde'])]
+    private string $statut = 'non_solde';
+
     public function getId(): ?int
     {
         return $this->id;
@@ -40,7 +42,6 @@ class Dette
     public function setMontant(float $montant): static
     {
         $this->montant = $montant;
-
         return $this;
     }
 
@@ -52,7 +53,6 @@ class Dette
     public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
-
         return $this;
     }
 
@@ -61,9 +61,16 @@ class Dette
         return $this->montantVerser;
     }
 
-    public function setMontantVerser(float $montant_verser): static
+    public function setMontantVerser(float $montantVerser): static
     {
-        $this->montantVerser = $montant_verser;
+        $this->montantVerser = $montantVerser;
+
+        // Mise à jour du statut en fonction de montantRestant
+        if ($this->getMontantRestant() === 0) {
+            $this->statut = 'solder';
+        } else {
+            $this->statut = 'non_solde';
+        }
 
         return $this;
     }
@@ -76,7 +83,22 @@ class Dette
     public function setClient(?Client $client): static
     {
         $this->client = $client;
-
         return $this;
+    }
+
+    public function getStatut(): string
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(string $statut): static
+    {
+        $this->statut = $statut;
+        return $this;
+    }
+
+    public function getMontantRestant(): float
+    {
+        return $this->montant - ($this->montantVerser ?? 0);
     }
 }

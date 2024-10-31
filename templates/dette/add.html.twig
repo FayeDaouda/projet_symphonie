@@ -27,6 +27,12 @@
                     Ajouter Dette
                 </button>
             {{ form_end(form) }}
+
+            {% if app.session.flashBag.has('success') %}
+                <div class="mt-4 text-green-600">
+                    {{ app.session.flashBag.get('success')[0] }}
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
